@@ -1,9 +1,15 @@
 FROM node:22-alpine
+
 WORKDIR /app
+
 COPY package*.json ./
+
 RUN npm install --omit=dev
-COPY src ./src
-COPY migrations ./migrations
+
+COPY . .
+
 ENV NODE_ENV=production
+
 EXPOSE 3000
-CMD ["sh", "-c", "node src/migrate.js && node src/index.js"]
+
+CMD ["sh", "-c", "node migrate.js && node index.js"]
