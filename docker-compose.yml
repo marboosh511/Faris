@@ -1,0 +1,31 @@
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: mamlakat_alkhayl
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: change_this_password
+    volumes:
+      - game_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d mamlakat_alkhayl"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  api:
+    build: .
+    restart: unless-stopped
+    environment:
+      PORT: 3000
+      NODE_ENV: production
+      DATABASE_URL: postgresql://postgres:change_this_password@db:5432/mamlakat_alkhayl
+      JWT_SECRET: replace_this_with_a_random_secret_of_at_least_32_characters
+      CORS_ORIGIN: https://your-game-domain.example
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+volumes:
+  game_db:
