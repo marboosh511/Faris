@@ -10,6 +10,9 @@ import { requireAuth, signToken } from './auth.js';
 
 if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) throw new Error('JWT_SECRET must contain at least 32 characters');
 const app = express();
+app.get('/', (req, res) => {
+  res.sendFile('/app/index.html');
+});
 app.set('trust proxy', 1);
 app.use(helmet({ contentSecurityPolicy: false }));
 const allowed = (process.env.CORS_ORIGIN || '').split(',').map(x => x.trim()).filter(Boolean);
